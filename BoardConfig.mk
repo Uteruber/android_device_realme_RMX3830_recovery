@@ -24,7 +24,6 @@ AB_OTA_PARTITIONS += \
     vbmeta_system \
     vendor_dlkm \
     product \
-    system_dlkm
 
 #vendor_boot configuration
 TARGET_NO_RECOVERY := true
@@ -93,7 +92,7 @@ BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := erofs
 BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := f2fs
 BOARD_SUPER_PARTITION_SIZE := 9126805504
 BOARD_SUPER_PARTITION_GROUPS := realme_dynamic_partitions
-BOARD_REALME_DYNAMIC_PARTITIONS_PARTITION_LIST := system system system_ext vendor odm product vendor_dlkm system_dlkm
+BOARD_REALME_DYNAMIC_PARTITIONS_PARTITION_LIST := system system system_ext vendor odm product vendor_dlkm
 BOARD_REALME_DYNAMIC_PARTITIONS_SIZE := 9122611200
 
 # DTB and dtb
