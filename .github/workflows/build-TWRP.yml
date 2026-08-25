@@ -22,7 +22,7 @@ on:
       DEVICE_PATH:
         description: 'DEVICE_PATH'
         required: true
-        default: 'device/realme/ussi_arm64'
+        default: 'device/realme/rmx3830'
       COMMON_TREE_URL:
         description: 'COMMON_TREE_URL (if no common tree, leave blank)'
         required: false
@@ -36,7 +36,7 @@ on:
       MAKEFILE_NAME:
         description: 'MAKEFILE_NAME'
         required: true
-        default: 'twrp_ussi_arm64'
+        default: 'twrp_rmx3830'
       BUILD_TARGET:
         description: 'BUILD_TARGET'
         required: true
@@ -140,18 +140,16 @@ jobs:
         if_true: twrp
         if_false: omni
 
-    # hey whoever reads this, this is need to make the TWRP work. on my UNISOCs the screen doesn't display without this fix
-    - name: Clone fixed bootable/recovery 
+    - name: Apply graphics_drm.cpp fix
       run: |
-        rm -rf bootable/recovery
-        git clone https://github.com/kyros70/android_bootable_recovery \
-          -b android-12.1 bootable/recovery
-      working-directory: ${{ steps.pwd.outputs.workspace-folder }}
+        curl -fL "https://raw.githubusercontent.com/kyros70/android_bootable_recovery/android-12.1/minuitwrp/graphics_drm.cpp" \
+          -o "android-recovery/bootable/recovery/minuitwrp/graphics_drm.cpp"
+        echo "Patch applied successfully"
 
     - name: Set Swap Space
       uses: pierotofy/set-swap-space@master
       with:
-        swap-size-gb: 12
+        swap-size-gb: 16
 
     - name: Building recovery
       run: |
