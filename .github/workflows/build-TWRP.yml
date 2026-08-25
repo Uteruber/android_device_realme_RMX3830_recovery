@@ -142,9 +142,10 @@ jobs:
 
     - name: Apply graphics_drm.cpp fix
       run: |
-        curl -fL "https://raw.githubusercontent.com/kyros70/android_bootable_recovery/android-12.1/minuitwrp/graphics_drm.cpp" \
-          -o "android-recovery/bootable/recovery/minuitwrp/graphics_drm.cpp"
-        echo "Patch applied successfully"
+        rm -rf bootable/recovery
+        git clone https://github.com/kyros70/android_bootable_recovery \
+          -b android-12.1 bootable/recovery
+      working-directory: ${{ steps.pwd.outputs.workspace-folder }}
 
     - name: Set Swap Space
       uses: pierotofy/set-swap-space@master
