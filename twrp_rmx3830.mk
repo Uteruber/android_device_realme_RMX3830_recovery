@@ -20,7 +20,7 @@ $(call inherit-product, vendor/twrp/config/common.mk)
 # Inherit from RMX3830 device
 $(call inherit-product, device/realme/rmx3830/device.mk)
 
-PRODUCT_DEVICE := RMX3830
+PRODUCT_DEVICE := rmx3830
 PRODUCT_NAME := twrp_rmx3830
 PRODUCT_BRAND := realme
 PRODUCT_MODEL := ussi_arm64_full
