@@ -120,7 +120,6 @@ TARGET_USERIMAGES_USE_F2FS := true
 TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
 BOARD_HAS_LARGE_FILESYSTEM := true
 RECOVERY_SDCARD_ON_DATA := true
-TARGET_USE_CUSTOM_LUN_FILE_PATH := /dev/block/loop%d
 TARGET_USES_MKE2FS := true
 
 # Crypto
@@ -147,18 +146,18 @@ TW_USE_LEGACY_BATTERY_SERVICES := true
 TW_BRIGHTNESS_PATH := "/sys/class/backlight/sprd_backlight/brightness"
 TW_MAX_BRIGHTNESS := 4095
 TW_CUSTOM_CPU_TEMP_PATH := "/sys/class/thermal/thermal_zone1/temp"
-TW_DEFAULT_BRIGHTNESS := 3338
-TW_CUSTOM_BATTERY_PATH := /sys/devices/platform/charger-manager/power_supply/battery
+TW_DEFAULT_BRIGHTNESS := 3000
+TW_CUSTOM_BATTERY_PATH := "/sys/devices/platform/charger-manager/power_supply/battery"
 TW_USE_LEGACY_BATTERY_SERVICES := true
-TW_Y_OFFSET := 45
-TW_H_OFFSET := -45
+TW_Y_OFFSET := 43
+TW_H_OFFSET := -43
 
 # INCLUDE TWRP CONFIG
 TW_INCLUDE_REPACKTOOLS := true
 TW_INCLUDE_NTFS_3G := true
 TW_INCLUDE_LPTOOLS := true
 TW_INCLUDE_FASTBOOTD := true
-TW_HAS_MTP := false
+TW_HAS_MTP := true
 TW_INCLUDE_RESETPROP := true
 TW_INCLUDE_LIBRESETPROP := true
 
