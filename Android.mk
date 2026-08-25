@@ -7,6 +7,6 @@
 
 LOCAL_PATH := $(call my-dir)
 
-ifeq ($(TARGET_DEVICE),ussi_arm64)
+ifeq ($(TARGET_DEVICE),rmx3830)
 include $(call all-subdir-makefiles,$(LOCAL_PATH))
 endif
