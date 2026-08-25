@@ -32,7 +32,7 @@ on:
       DEVICE_NAME:
         description: 'DEVICE_NAME'
         required: true
-        default: 'RMX3830'
+        default: 'rmx3830'
       MAKEFILE_NAME:
         description: 'MAKEFILE_NAME'
         required: true
@@ -140,7 +140,7 @@ jobs:
         if_true: twrp
         if_false: omni
 
-    - name: Apply graphics_drm.cpp fix
+    - name: Clone fixed bootable/recovery 
       run: |
         rm -rf bootable/recovery
         git clone https://github.com/kyros70/android_bootable_recovery \
@@ -150,7 +150,7 @@ jobs:
     - name: Set Swap Space
       uses: pierotofy/set-swap-space@master
       with:
-        swap-size-gb: 16
+        swap-size-gb: 12
 
     - name: Building recovery
       run: |
