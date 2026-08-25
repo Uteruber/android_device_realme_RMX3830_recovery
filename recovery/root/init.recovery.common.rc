@@ -1,6 +1,5 @@
 # SPDX-FileCopyrightText: 2016-2023 Unisoc (Shanghai) Technologies Co., Ltd
 # SPDX-License-Identifier: LicenseRef-Unisoc-General-1.0
-
 #
 ## Please include it in /init.recovery.${ro.hardware}.rc
 #
@@ -15,12 +14,6 @@ service create_splloader_dual_slot_byname_path /system/bin/create_splloader_dual
     disabled
     oneshot
     seclabel u:r:create_spl_link_recovery:s0
-
-service vendor.mlogservice /vendor/bin/mlogservice
-    class main
-    user shell
-    group system root
-
 
 on init
     # Apply strict SELinux checking of PROT_EXEC on mmap/mprotect calls.
@@ -54,47 +47,6 @@ on init
     chown system root /proc/cpwcn/wdtirq
     chmod 766 /proc/cpwcn/wdtirq
 
-    # Create mount-point for ConfigFS USB gadgets
-    # Add standard gadget entries
-    mount configfs none /config
-    mkdir /config/usb_gadget/g1 0770 shell shell
-    write /config/usb_gadget/g1/idVendor 0x1782
-    write /config/usb_gadget/g1/idProduct 0x4d00
-    mkdir /config/usb_gadget/g1/strings/0x409 0770 shell shell
-    write /config/usb_gadget/g1/strings/0x409/serialnumber ${ro.serialno}
-    write /config/usb_gadget/g1/strings/0x409/manufacturer Unisoc
-    write /config/usb_gadget/g1/strings/0x409/product "Unisoc Phone"
-    mkdir /config/usb_gadget/g1/configs/b.1 0770 shell shell
-    mkdir /config/usb_gadget/g1/configs/b.1/strings/0x409 0770 shell shell
-    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "Conf 1"
-    write /config/usb_gadget/g1/configs/b.1/MaxPower 120
-
-    # Create adb+ffs gadget function
-    mkdir /config/usb_gadget/g1/functions/ffs.adb 0770 shell shell
-    mkdir /config/usb_gadget/g1/functions/ffs.fastboot 0770 shell shell
-    mkdir /dev/usb-ffs 0770 shell shell
-    mkdir /dev/usb-ffs/adb 0770 shell shell
-    mount functionfs adb /dev/usb-ffs/adb uid=2000,gid=2000
-    mkdir /dev/usb-ffs/fastboot 0770 system system
-    mount functionfs fastboot /dev/usb-ffs/fastboot rmode=0770,fmode=0660,uid=1000,gid=1000
-
-    # Create MTP and PTP functions
-    mkdir /config/usb_gadget/g1/functions/mtp.gs0 0770 shell shell
-    mkdir /config/usb_gadget/g1/functions/ptp.gs1 0770 shell shell
-    mkdir /config/usb_gadget/g1/functions/rndis.gs4 0770 shell shell
-    mkdir /config/usb_gadget/g1/functions/vser.gs7 0770 shell shell
-    mkdir /config/usb_gadget/g1/functions/accessory.gs2 0770 shell shell
-    mkdir /config/usb_gadget/g1/functions/audio_source.gs3 0770 shell shell
-    mkdir /config/usb_gadget/g1/functions/midi.gs5 0770 shell shell
-    mkdir /config/usb_gadget/g1/functions/sprdgser.gs0 0770 shell shell
-    mkdir /config/usb_gadget/g1/functions/sprdgser.gs1 0770 shell shell
-    mkdir /config/usb_gadget/g1/functions/sprdgser.gs2 0770 shell shell
-    mkdir /config/usb_gadget/g1/functions/sprdgser.gs3 0770 shell shell
-    mkdir /config/usb_gadget/g1/functions/sprdgser.gs4 0770 shell shell
-    mkdir /config/usb_gadget/g1/functions/sprdgser.gs5 0770 shell shell
-    mkdir /config/usb_gadget/g1/functions/sprdgser.gs6 0770 shell shell
-    mkdir /config/usb_gadget/g1/functions/sprdgser.gs7 0770 shell shell
-
 on boot
     setprop sys.usb.configfs 1
     write /sys/block/mmcblk0boot0/force_ro 0
@@ -105,6 +57,8 @@ on boot
     chmod 660 /sys/class/power_supply/battery/input_current_limit
     chmod 660 /sys/class/power_supply/battery/constant_charge_current
     chmod 660 /sys/class/power_supply/battery/charger.0/keep_awake
+    chmod 660 /sys/class/power_supply/battery/charger.0/charge_pump_present
+    chmod 660 /sys/class/power_supply/battery/charger.0/charge_pump_current
 
 on fs
     #mkdir /data/misc/bluedroid 0770 bluetooth net_bt_stack
@@ -158,61 +112,5 @@ on property:ro.debuggable=1
 on property:ro.bootmode=recovery
     class_start recovery
 
-on property:sys.usb.configfs=1 && property:sys.usb.ffs.ready=1 && property:sys.usb.config=adb,vser,gser
-    write /config/usb_gadget/g1/idVendor 0x1782
-    write /config/usb_gadget/g1/idProduct 0x5d06
-    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "adb_vser_gser"
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/f10
-    rm /config/usb_gadget/g1/configs/b.1/f11
-
-    symlink /config/usb_gadget/g1/functions/ffs.adb  /config/usb_gadget/g1/configs/b.1/f1
-    symlink /config/usb_gadget/g1/functions/vser.gs7 /config/usb_gadget/g1/configs/b.1/f2
-    symlink /config/usb_gadget/g1/functions/sprdgser.gs0 /config/usb_gadget/g1/configs/b.1/f3
-
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    setprop sys.usb.state ${sys.usb.config}
-
-on property:sys.usb.configfs=1 && property:sys.usb.config=vser
-    write /config/usb_gadget/g1/idVendor 0x1782
-    write /config/usb_gadget/g1/idProduct 0x4d00
-    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "vser"
-    rm /config/usb_gadget/g1/configs/b.1/f1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-    rm /config/usb_gadget/g1/configs/b.1/f3
-    rm /config/usb_gadget/g1/configs/b.1/f4
-    rm /config/usb_gadget/g1/configs/b.1/f5
-    rm /config/usb_gadget/g1/configs/b.1/f6
-    rm /config/usb_gadget/g1/configs/b.1/f7
-    rm /config/usb_gadget/g1/configs/b.1/f8
-    rm /config/usb_gadget/g1/configs/b.1/f9
-    rm /config/usb_gadget/g1/configs/b.1/f10
-    rm /config/usb_gadget/g1/configs/b.1/f11
-
-    symlink /config/usb_gadget/g1/functions/vser.gs7 /config/usb_gadget/g1/configs/b.1/f1
-
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    setprop sys.usb.state ${sys.usb.config}
-
 on property:ro.bootmode=factorytest && property:ro.debuggable=0
     setprop sys.usb.config vser
-
-# for grf
-
-on property:ro.odm.build.fingerprint=*
-    setprop ro.vendor.build.fingerprint ${ro.odm.build.fingerprint}
-
-on property:ro.product.device=*
-    setprop ro.product.vendor.device ${ro.product.device}
-on property:ro.product.model=*
-    setprop ro.product.vendor.model ${ro.product.model}
-on property:ro.product.name=*
-    setprop ro.product.vendor.name ${ro.product.name}
