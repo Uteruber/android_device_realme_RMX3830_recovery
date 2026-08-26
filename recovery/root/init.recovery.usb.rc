@@ -27,15 +27,16 @@
 on init
     setprop sys.usb.configfs 1
     setprop sys.usb.ffs.aio_compat 1
-    setprop vendor.usb.controller "musb-hdrc"
+    setprop vendor.usb.controller "musb-hdrc.1.auto"
+    setprop sys.usb.controller "musb-hdrc.1.auto"
     setprop vendor.usb.acm_cnt 0
     setprop vendor.usb.acm_port0 ""
     setprop vendor.usb.acm_port1 ""
     setprop vendor.usb.acm_enable 0
     setprop otg.enabled 0
-
-on property:ro.boot.usbcontroller=*
-    setprop sys.usb.controller ${ro.boot.usbcontroller}
+    setprop ro.recovery.usb.vid "18D1"
+    setprop ro.recovery.usb.adb.pid "D001"
+    setprop ro.recovery.usb.fastboot.pid "4EE0"
 
 on fs
     mkdir /config
@@ -78,7 +79,9 @@ on property:sys.usb.config=none && property:sys.usb.configfs=1
 on property:sys.usb.config=adb
     stop fastbootd
     start adbd
-    setprop sys.usb.configfs 1
+    setprop sys.usb.configfs
+    setprop ro.recovery.usb.vid "18D1"
+    setprop ro.recovery.usb.adb.pid "D001"
 
 on property:sys.usb.config=adb
     write /config/usb_gadget/g1/UDC "none"
@@ -94,7 +97,9 @@ on property:sys.usb.config=adb
     setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=sideload
-    write /config/usb_gadget/g1/idVendor 0x18d1
+    write /config/usb_gadget/g1/idVendor "0x18d1"
+    setprop ro.recovery.usb.vid "18D1"
+    setprop ro.recovery.usb.adb.pid "D001"
 
 on property:sys.usb.config=mtp
     setprop sys.usb.ffs.mtp.ready 1
@@ -108,10 +113,14 @@ on property:sys.usb.config=mtp
     write /config/usb_gadget/g1/bDeviceClass 0
     symlink /config/usb_gadget/g1/functions/ffs.mtp /config/usb_gadget/g1/configs/b.1/f1
     write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    setprop sys.usb.state mtp
+    setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=mtp,adb
     start adbd
+    setprop sys.usb.ffs.ready 1
+    setprop sys.usb.configfs 1
+    setprop ro.recovery.usb.vid "18D1"
+    setprop ro.recovery.usb.adb.pid "D001"
 
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mtp,adb && property:sys.usb.configfs=1
     setprop sys.usb.ffs.mtp.ready 1
@@ -132,6 +141,10 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mtp,adb && property:s
     stop adbd
     start fastbootd
     setprop sys.usb.configfs 2
+    setprop sys.usb.ffs.ready 1
+    setprop ro.recovery.usb.vid "18D1"
+    setprop ro.recovery.usb.adb.pid "D001"
+    setprop ro.recovery.usb.fastboot.pid "4EE0
 
 on property:sys.usb.ffs.ready=1 && property:sys.usb.config=fastboot
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "fastboot"
